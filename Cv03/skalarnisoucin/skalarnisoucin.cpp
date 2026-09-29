@@ -13,6 +13,7 @@ int main()
 	int vy;
 	int sksoucin;
 
+
 	printf("Zadejte souradnice prvniho vektoru oddelene mezerou (x y): ");
 	scanf_s("%d %d", &ux, &uy);
 
