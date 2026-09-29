@@ -13,7 +13,6 @@ int main()
 	int vy;
 	int sksoucin;
 
-
 	printf("Zadejte souradnice prvniho vektoru oddelene mezerou (x y): ");
 	scanf_s("%d %d", &ux, &uy);
 
@@ -21,7 +20,8 @@ int main()
 	scanf_s("%d %d", &vx, &vy);
 
 	sksoucin = ux * vx + uy * vy;
-	printf("Skalarni soucin vektoru je: %d", sksoucin);
+
+	printf("Skalarni soucin je: %d", sksoucin);
 
 	return 0;
 }

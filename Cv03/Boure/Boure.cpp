@@ -7,15 +7,16 @@ using namespace std;
 
 int main()
 {
-	double rychlost_svetla = 340;
+	const double rychlost_svetla = 340;
 	double cas;
 	double vzdalenost;
-	
-	printf("Zadej cas (s): ");
+
+	printf("Zadejte cas (s): ");
 	scanf_s("%lf", &cas);
 
 	vzdalenost = cas * rychlost_svetla;
-	printf("Vzdalenost: %lf", vzdalenost);
+
+	printf("Vzdalenost je: %lf", vzdalenost);
 
 	return 0;
 }
