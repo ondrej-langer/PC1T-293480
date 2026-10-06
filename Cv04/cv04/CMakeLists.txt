@@ -12,7 +12,7 @@ endif()
 project ("prestupny_rok")
 
 # Add source to this project's executable.
-add_executable (prestupny_rok "prestupny_rok.cpp" "prestupny_rok.h")
+add_executable (prestupny_rok "cv04.cpp" "cv04.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET prestupny_rok PROPERTY CXX_STANDARD 20)
