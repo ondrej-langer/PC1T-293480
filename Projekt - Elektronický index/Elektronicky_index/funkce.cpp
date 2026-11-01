@@ -35,7 +35,7 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 	return 0;
 }
 
-void BodyC(char* predmet, char* jmeno, FILE* soubor) {							//Prideleni bodu za cvika
+void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Prideleni bodu za cvika
 	char radek[100];
 	char* tradek = nullptr;
 	int body = 0;
@@ -46,7 +46,7 @@ void BodyC(char* predmet, char* jmeno, FILE* soubor) {							//Prideleni bodu za
 	temp = fopen("temp.txt", "w+");
 
 	strcat(predmet, "\n");
-	rewind(soubor);
+	rewind(soubor);																//Rewind kvuli naslednymu kopirovani a vytvareni novyho "studenti.txt"
 
 	while (fgets(radek, 100, soubor)) {	
 		if (strcmp(radek, jmeno) == 0) {										//Hleda jmeno
@@ -58,18 +58,41 @@ void BodyC(char* predmet, char* jmeno, FILE* soubor) {							//Prideleni bodu za
 				fprintf(temp, radek);
 				fgets(radek, 100, soubor);
 			}
+
 			fprintf(temp, radek);												//Ma predmet, nacte dalsi radek s body, nacte z klavesnice body, prideli
 			fgets(radek, 100, soubor);
 			tradek = strtok(radek, " ");
 			bodyC = strtol(radek, NULL, 10);
-			printf("Zadejte pocet bodu k prideleni za cviceni: ");
-			scanf_s("%d", &body);
 			bodyT = strtol(strtok(NULL, " "), NULL, 10);
 			bodyZ = strtol(strtok(NULL, " "), NULL, 10);
-			sprintf(radek, "%d %d %d\n", body + bodyC, bodyT, bodyZ);			//Vytvori novy radek s body
+			switch (akce) {
+			case 1:printf("Zadejte pocet bodu k prideleni za cviceni: ");break;
+			case 2:printf("Zadejte pocet bodu k prideleni za testy: ");break;
+			case 3:printf("Zadejte pocet bodu k prideleni za zkousku: ");break;
+			}
+			scanf_s("%d", &body);
+			celkem = body + bodyC + bodyT + bodyZ;
+			
+			while ((celkem < 0) or (celkem > 100)) {							//Jestli nepresahly body limit
+				printf("Body prevysily hodnotu 100 nebo byly mensi nez 0\n");
+				switch (akce) {
+				case 1: printf("Zadejte jiny pocet bodu k prideleni za cviceni: ");break;
+				case 2: printf("Zadejte jiny pocet bodu k prideleni za testy: ");break;
+				case 3: printf("Zadejte jiny pocet bodu k prideleni za zkousku: ");break;
+				}
+				scanf_s("%d", &body);
+				celkem = body + bodyC + bodyT + bodyZ;
+			}
+			
+			switch (akce) {														//Vytvori novy radek s body
+			case 1:sprintf(radek, "%d %d %d\n", body + bodyC, bodyT, bodyZ);break;
+			case 2:sprintf(radek, "%d %d %d\n", bodyC, body + bodyT, bodyZ);break;
+			case 3:sprintf(radek, "%d %d %d\n", bodyC, bodyT, body + bodyZ);break;
+			}
+
 			fprintf(temp, radek);												//Vlozi do souboru
 			printf("%s", radek);												//Vytiskne body
-			celkem = body + bodyC + bodyT + bodyZ;
+			
 			if (celkem >= 90) {
 				printf("Vysledna znamka z premdetu: A");
 			}

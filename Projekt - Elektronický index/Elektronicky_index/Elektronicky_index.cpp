@@ -79,13 +79,8 @@ int main()
 		strcat(jmeno, "\n");
 		if ((overeniJmena(jmeno, studenti) and overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) and (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 			//printf("Zadali jste spravne jmeno\n");
+			Body(predmet, jmeno, studenti, akce);
 			overeni = 1;
-			switch(akce){
-
-			case 1: BodyC(predmet, jmeno, studenti);
-			//case 2: BodyT();
-			//case 3: BodyZ();
-			}
 		}
 		else if(akce == 4 or akce == 5) {
 			switch (akce) {
