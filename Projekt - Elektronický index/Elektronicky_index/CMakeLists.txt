@@ -12,7 +12,7 @@ endif()
 project ("Elektronicky_index")
 
 # Add source to this project's executable.
-add_executable (Elektronicky_index "Elektronicky_index.cpp" "Elektronicky_index.h")
+add_executable (Elektronicky_index "Elektronicky_index.cpp" "Elektronicky_index.h" "funkce.h" "funkce.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Elektronicky_index PROPERTY CXX_STANDARD 20)
