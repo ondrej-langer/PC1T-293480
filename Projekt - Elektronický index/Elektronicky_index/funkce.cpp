@@ -122,3 +122,55 @@ void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Pridelen
 	remove("studenti.txt");
 	rename("temp.txt", "studenti.txt");
 }
+
+void add(char* predmet, char* jmeno, FILE* soubor) {
+	char radek[100];
+	char pomocny_radek[100];
+	char* tradek = nullptr;
+	int pocetpredmetu = 0;
+	unsigned short k = 1;
+
+	FILE* temp;
+	temp = fopen("temp.txt", "w+");
+
+	rewind(soubor);
+
+	while (fgets(radek, 100, soubor)) {
+		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
+			
+			fprintf(temp, radek);
+			fgets(radek, 100, soubor);
+			strcpy(pomocny_radek, radek);
+			tradek = strtok(pomocny_radek, " ");
+			while (tradek != NULL) {
+				if (strcmp(tradek, predmet) == 0) {
+					printf("Studen je jiz zapsan v predmetu");
+					fprintf(temp, radek);
+					k = 0;
+				}
+				tradek = strtok(NULL, " ");
+				pocetpredmetu++;
+			}
+			if (k == 1) {
+				radek[strcspn(radek, "\n")] = '\0';
+				strcat(radek, predmet);
+				strcat(radek, " \n");
+				fprintf(temp, radek);
+				for (int i = 0; i < ((pocetpredmetu - 1) * 2); i++) {
+					fgets(radek, 100, soubor);
+					fprintf(temp, radek);
+				}
+				strcat(predmet, "\n");
+				fprintf(temp, predmet);
+				fprintf(temp, "0 0 0\n");
+			}
+		}
+		else {																	//Dodelat kdyz jmeno neni v seznamu!!!
+			fprintf(temp, radek);
+		}
+	}
+	fclose(soubor);
+	fclose(temp);
+	remove("studenti.txt");
+	rename("temp.txt", "studenti.txt");
+}

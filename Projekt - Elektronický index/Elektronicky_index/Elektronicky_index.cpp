@@ -85,7 +85,7 @@ int main()
 		else if(akce == 4 or akce == 5) {
 			switch (akce) {
 
-			//case 4: add();
+			case 4: add(predmet, jmeno, studenti);overeni = 1;break;
 			//case 5: del();
 			}
 		}
