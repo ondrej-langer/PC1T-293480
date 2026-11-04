@@ -142,7 +142,7 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 			fgets(radek, 100, soubor);
 			strcpy(pomocny_radek, radek);
 			tradek = strtok(pomocny_radek, " \n");
-			while (tradek != NULL) {											//Prohledava, jestli je student
+			while (tradek != NULL) {											//Prohledava, jestli je student zapsan
 				if (strcmp(tradek, predmet) == 0) {
 					printf("Studen je jiz zapsan v predmetu");
 					fprintf(temp, radek);
@@ -188,7 +188,10 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 
 void del(char* predmet, char* jmeno, FILE* soubor) {
 	char radek[100];
+	char pomocny_radek[100];
+	strcpy(pomocny_radek, "");
 	char* tradek = nullptr;
+	int pocetpredmetu = 0;
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -201,13 +204,38 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 			tradek = strtok(radek, " \n");
 			while (tradek != NULL) {											//Doplnit, jak ma dal program postupovat v mazani
 				if (strcmp(tradek, predmet) == 0) {
-
+					tradek = strtok(NULL, " \n");
 				}
-				tradek = strtok(NULL, " ");
+				else {
+					strcat(pomocny_radek, tradek);
+					strcat(pomocny_radek, " ");
+					tradek = strtok(NULL, " \n");
+					pocetpredmetu++;
+				}
+			}
+			if (pocetpredmetu > 0) {
+				fprintf(temp, jmeno);
+				pomocny_radek[strlen(pomocny_radek) - 1] = '\n';
+				fprintf(temp, pomocny_radek);
+				fgets(radek, 100, soubor);
+				strcat(predmet, "\n");
+				while (strcmp(radek, predmet) != 0) {								//Dokud nema predmet, kopiruje radky
+					fprintf(temp, radek);
+					fgets(radek, 100, soubor);
+				}
+				fgets(radek, 100, soubor);
+			}
+			else {
+				fgets(radek, 100, soubor);
+				fgets(radek, 100, soubor);
 			}
 		}
 		else {
 			fprintf(temp, radek);
 		}
 	}
+	fclose(soubor);
+	fclose(temp);
+	remove("studenti.txt");
+	rename("temp.txt", "studenti.txt");
 }

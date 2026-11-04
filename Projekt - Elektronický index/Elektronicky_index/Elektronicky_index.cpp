@@ -86,7 +86,7 @@ int main()
 			switch (akce) {
 
 			case 4: add(predmet, jmeno, studenti);overeni = 1;break;
-			//case 5: del();
+			case 5: del(predmet, jmeno, studenti);overeni = 1;break;
 			}
 		}
 		else {
