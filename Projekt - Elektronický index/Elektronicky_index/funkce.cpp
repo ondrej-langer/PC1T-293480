@@ -17,13 +17,13 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 
 	if (k == 0) {																//Nacteni radku s predmety (pod jmenem) a pocatek deleni
 		fgets(radek, 100, soubor);
-		tradek = strtok(radek, " ");
+		tradek = strtok(radek, " \n");
 	}
 
 	while (tradek != NULL) {													//Prepsani jednotlivých zkratek předmětů do pole
 		strcpy(predmety[*pocetpredmetu], tradek);
 		printf("%s", predmety[*pocetpredmetu]);
-		tradek = strtok(NULL, " ");
+		tradek = strtok(NULL, " \n");
 		(*pocetpredmetu)++;
 	}
 
@@ -141,8 +141,8 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 			fprintf(temp, radek);
 			fgets(radek, 100, soubor);
 			strcpy(pomocny_radek, radek);
-			tradek = strtok(pomocny_radek, " ");
-			while (tradek != NULL) {
+			tradek = strtok(pomocny_radek, " \n");
+			while (tradek != NULL) {											//Prohledava, jestli je student
 				if (strcmp(tradek, predmet) == 0) {
 					printf("Studen je jiz zapsan v predmetu");
 					fprintf(temp, radek);
@@ -151,26 +151,63 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 				tradek = strtok(NULL, " ");
 				pocetpredmetu++;
 			}
-			if (k == 1) {
-				radek[strcspn(radek, "\n")] = '\0';
+			if (k == 1) {														//Pokud neni student zapsany, zapise se zde
+				radek[strcspn(radek, "\n")] = ' ';
 				strcat(radek, predmet);
-				strcat(radek, " \n");
+				strcat(radek, "\n");
 				fprintf(temp, radek);
-				for (int i = 0; i < ((pocetpredmetu - 1) * 2); i++) {
+				for (int i = 0; i < (pocetpredmetu * 2); i++) {
 					fgets(radek, 100, soubor);
 					fprintf(temp, radek);
 				}
 				strcat(predmet, "\n");
 				fprintf(temp, predmet);
 				fprintf(temp, "0 0 0\n");
+				printf("Student byl uspesne pridan do predmetu");
 			}
+			k = 0;
 		}
-		else {																	//Dodelat kdyz jmeno neni v seznamu!!!
+		else {																	//Kdyz neexistuje jmeno vubec, vytiskne vsechny radky
 			fprintf(temp, radek);
 		}
 	}
+	if (k == 1) {																//Vytiskne do souboru nove jmeno a rovnou s predmetem
+		fprintf(temp, jmeno);
+		strcat(predmet, "\n");
+		fprintf(temp, predmet);
+		fprintf(temp, predmet);
+		fprintf(temp, "0 0 0\n");
+		printf("Student byl uspesne vytvoren a pridan do predmetu");
+	}
+
 	fclose(soubor);
 	fclose(temp);
 	remove("studenti.txt");
 	rename("temp.txt", "studenti.txt");
+}
+
+void del(char* predmet, char* jmeno, FILE* soubor) {
+	char radek[100];
+	char* tradek = nullptr;
+
+	FILE* temp;
+	temp = fopen("temp.txt", "w+");
+
+	rewind(soubor);
+
+	while (fgets(radek, 100, soubor)) {
+		if (strcmp(radek, jmeno) == 0) {
+			fgets(radek, 100, soubor);
+			tradek = strtok(radek, " \n");
+			while (tradek != NULL) {											//Doplnit, jak ma dal program postupovat v mazani
+				if (strcmp(tradek, predmet) == 0) {
+
+				}
+				tradek = strtok(NULL, " ");
+			}
+		}
+		else {
+			fprintf(temp, radek);
+		}
+	}
 }
