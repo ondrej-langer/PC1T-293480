@@ -1,4 +1,4 @@
-﻿// Elektronicky_index.cpp : Defines the entry point for the application.
+// Elektronicky_index.cpp : Defines the entry point for the application.
 //
 
 #include "Elektronicky_index.h"
@@ -12,11 +12,13 @@ int main()
 	int overeni = 0;
 
 	FILE* lektori;
+	// a+: cteni i zapis, kurzor cteni na zacatku, zapis skace na konec
 	lektori = fopen("lektori.txt", "a+");
 
 	while (overeni == 0) {														//Overeni, zda uzivatel (lektor) existuje
 		printf("Zadejte sve jmeno: ");
 		scanf_s("%s", jmeno, 100);												//Nacteni jmena lektora
+		// \n kvuli fgets v souboru (strcmp vyzaduje presnou shodu)
 		strcat(jmeno, "\n");
 		if (overeniJmena(jmeno, lektori) == 1) {								//Vyhodnoceni, zda lektor existuje
 			//printf("Zadali jste spravne jmeno\n");
@@ -24,12 +26,13 @@ int main()
 		}
 		else {
 			printf("Zadali jste nespravne jmeno\n");
+			// rewind: vrati kurzor cteni v souboru na zacatek (bajt 0)
 			rewind(lektori);
 			continue;
 		}
 	}
 	overeni = 0;
-	
+
 	char predmet[100];
 	int pocetpredmetu = 0;
 	char predmety[10][50];
@@ -38,7 +41,8 @@ int main()
 	while (overeni == 0) {														//Zjisteni opravneni na predmet
 		printf("Zadejte predmet pro editaci (napr.: ZKR,PC1T,...): ");
 		scanf_s("%s", predmet, 100);											//Nacteni predmetu pro editaci
-		
+
+		// &pocetpredmetu: predani adresou (pointer), aby funkce menila hodnotu v main
 		if (overeniPredmetu(predmet, &pocetpredmetu, predmety, k, lektori)) {	//Vyhodnoceni, zda ma lektor opravneni editovat predmet
 			printf("Predmet je v seznamu");
 			k = 1;
@@ -56,6 +60,7 @@ int main()
 
 	while (overeni == 0) {														//Zadani akce, kterou chceme provest
 		printf("\nZadejte akci (UKONCIT APLIKACI - 0, BODYC - 1, BODYT - 2, BODYZ - 3, ADD - 4, DEL - 5): ");
+		// scanf_s u int chce jen adresu &akce (velikost bufferu se resi jen u textu)
 		scanf_s("%d", &akce);													//Nacteni akce
 
 		if (akce == 0) {														//Zajisteni spravnosti nacteni akci
@@ -77,12 +82,13 @@ int main()
 		printf("\nZadejte jmeno studenta: ");
 		scanf_s("%s", jmeno, 100);												//Nacteni jmena studenta
 		strcat(jmeno, "\n");
+		// zleva doprava (short-circuit): kdyz 1. cast vrati 0, 2. funkce se ani nespusti
 		if ((overeniJmena(jmeno, studenti) and overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) and (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 			//printf("Zadali jste spravne jmeno\n");
 			Body(predmet, jmeno, studenti, akce);
 			overeni = 1;
 		}
-		else if(akce == 4 or akce == 5) {
+		else if (akce == 4 or akce == 5) {
 			switch (akce) {
 
 			case 4: add(predmet, jmeno, studenti);overeni = 1;break;
@@ -93,6 +99,7 @@ int main()
 			int i;
 			printf("Zadali jste nespravne jmeno\n");
 			rewind(studenti);
+			// uvolneni pole: strcpy nastavi na index 0 ukoncovaci znak \0
 			for (i = 0; i < pocetpredmetuS; i++) {
 				strcpy(predmetyS[i], "");
 			}
@@ -102,6 +109,7 @@ int main()
 	}
 	overeni = 0;
 
+	// fclose: zapise vyrovnavaci buffer na disk a uvolni souborovy pointer v OS
 	fclose(lektori);										//TYTO CLOSY SMAZAT NEBO PRESUNOUT
 	fclose(studenti);
 	return 0;
