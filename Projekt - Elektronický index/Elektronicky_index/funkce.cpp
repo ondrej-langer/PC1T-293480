@@ -2,6 +2,9 @@
 
 int overeniJmena(char* jmeno, FILE* soubor) {									//Funkce pro overeni nacteneho jmena
 	char jeJmeno[100];
+	char jmeno0[100];
+
+	strcat(jmeno, "\n");
 	while (fgets(jeJmeno, 100, soubor)) {
 		if (strcmp(jmeno, jeJmeno) == 0) {
 			return 1;
@@ -41,11 +44,13 @@ void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Pridelen
 	int body = 0;
 	int bodyC, bodyT, bodyZ;
 	int celkem;
+	char predmet0[100];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
 
-	strcat(predmet, "\n");
+	strcpy(predmet0, predmet);
+	strcat(predmet0, "\n");
 	rewind(soubor);																//Rewind kvuli naslednymu kopirovani a vytvareni novyho "studenti.txt"
 
 	while (fgets(radek, 100, soubor)) {	
@@ -53,8 +58,10 @@ void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Pridelen
 
 			fprintf(temp, radek);
 			fgets(radek, 100, soubor);
+			fprintf(temp, radek);
+			fgets(radek, 100, soubor);
 
-			while (strcmp(radek, predmet) != 0) {								//Dokud nema predmet, kopiruje radky
+			while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
 				fprintf(temp, radek);
 				fgets(radek, 100, soubor);
 			}
@@ -129,6 +136,7 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 	char* tradek = nullptr;
 	int pocetpredmetu = 0;
 	unsigned short k = 1;
+	char predmet0[100];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -160,8 +168,9 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 					fgets(radek, 100, soubor);
 					fprintf(temp, radek);
 				}
-				strcat(predmet, "\n");
-				fprintf(temp, predmet);
+				strcpy(predmet0, predmet);
+				strcat(predmet0, "\n");
+				fprintf(temp, predmet0);
 				fprintf(temp, "0 0 0\n");
 				printf("Student byl uspesne pridan do predmetu");
 			}
@@ -173,9 +182,10 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 	}
 	if (k == 1) {																//Vytiskne do souboru nove jmeno a rovnou s predmetem
 		fprintf(temp, jmeno);
-		strcat(predmet, "\n");
-		fprintf(temp, predmet);
-		fprintf(temp, predmet);
+		strcpy(predmet0, predmet);
+		strcat(predmet0, "\n");
+		fprintf(temp, predmet0);
+		fprintf(temp, predmet0);
 		fprintf(temp, "0 0 0\n");
 		printf("Student byl uspesne vytvoren a pridan do predmetu");
 	}
@@ -192,6 +202,7 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 	strcpy(pomocny_radek, "");
 	char* tradek = nullptr;
 	int pocetpredmetu = 0;
+	char predmet0[100];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -218,8 +229,9 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 				pomocny_radek[strlen(pomocny_radek) - 1] = '\n';
 				fprintf(temp, pomocny_radek);
 				fgets(radek, 100, soubor);
-				strcat(predmet, "\n");
-				while (strcmp(radek, predmet) != 0) {								//Dokud nema predmet, kopiruje radky
+				strcpy(predmet0, predmet);
+				strcat(predmet0, "\n");
+				while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
 					fprintf(temp, radek);
 					fgets(radek, 100, soubor);
 				}
@@ -238,4 +250,66 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 	fclose(temp);
 	remove("studenti.txt");
 	rename("temp.txt", "studenti.txt");
+}
+
+void admin(FILE* soubor) {
+	char radek[100];
+	char pomocny_radek[100];
+	char* tradek = nullptr;
+	unsigned short k = 1;
+	char jmeno[100];
+	char predmet[100];
+
+
+	printf("\nZadejte jmeno lektora pro pridani: ");
+	scanf_s("%s", jmeno, 100);
+	strcat(jmeno, "\n");
+
+	FILE* temp;
+	temp = fopen("temp.txt", "w+");
+
+	rewind(soubor);
+
+	while (fgets(radek, 100, soubor)) {
+		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
+			fprintf(temp, radek);
+			printf("\nLektor je jiz pridan");
+			printf("\nZadejte predmet, do ktereho chcete lektora pridat: ");
+			scanf_s("%s", predmet, 100);
+			fgets(radek, 100, soubor);
+			strcpy(pomocny_radek, radek);
+			tradek = strtok(pomocny_radek, " \n");
+			while (tradek != NULL) {											//Prohledava, jestli je student zapsan
+				if (strcmp(tradek, predmet) == 0) {
+					printf("Lektor je jiz pridan do predmetu");
+					fprintf(temp, radek);
+					k = 0;
+				}
+				tradek = strtok(NULL, " ");
+			}
+			if (k == 1) {														//Pokud neni student zapsany, zapise se zde
+				radek[strcspn(radek, "\n")] = ' ';
+				strcat(radek, predmet);
+				strcat(radek, "\n");
+				fprintf(temp, radek);
+			}
+			k = 0;
+		}
+		else {																	//Kdyz neexistuje jmeno vubec, vytiskne vsechny radky
+			fprintf(temp, radek);
+		}
+	}
+	if (k == 1) {																//Vytiskne do souboru nove jmeno a rovnou s predmetem
+		printf("\nZadejte predmet, do ktereho chcete lektora pridat: ");
+		scanf_s("%s", predmet, 100);
+		fprintf(temp, jmeno);
+		strcat(predmet, "\n");
+		fprintf(temp, predmet);
+		printf("Lektor byl uspesne vytvoren a pridan do predmetu");
+	}
+
+	fclose(soubor);
+	fclose(temp);
+	remove("lektori.txt");
+	rename("temp.txt", "lektori.txt");
 }
