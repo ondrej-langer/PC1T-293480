@@ -14,19 +14,23 @@ int main()
 	FILE* lektori;
 	lektori = fopen("lektori.txt", "a+");
 
+	printf("------------------------------\n");
+
 	while (overeni == 0) {														//Overeni, zda uzivatel (lektor) existuje
 		printf("Zadejte sve jmeno: ");
 		scanf_s("%s", jmeno, 100);												//Nacteni jmena lektora
+		printf("------------------------------\n");
 		if (overeniJmena(jmeno, lektori) == 1) {								//Vyhodnoceni, zda lektor existuje
 			//printf("Zadali jste spravne jmeno\n");
 			overeni = 1;
 		}
-		else if (strcmp(jmeno, "admin") == 0) {
+		else if (strcmp(jmeno, "admin\n") == 0) {
 			admin(lektori);
 			lektori = fopen("lektori.txt", "a+");
 		}
 		else {
 			printf("Zadali jste nespravne jmeno\n");
+			printf("------------------------------\n");
 			rewind(lektori);
 			continue;
 		}
@@ -41,11 +45,14 @@ int main()
 	while (overeni == 0) {														//Zjisteni opravneni na predmet
 		printf("Zadejte predmet pro editaci (napr.: ZKR,PC1T,...): ");
 		scanf_s("%s", predmet, 100);											//Nacteni predmetu pro editaci
-		
+		printf("------------------------------\n");
 		if (overeniPredmetu(predmet, &pocetpredmetu, predmety, k, lektori)) {	//Vyhodnoceni, zda ma lektor opravneni editovat predmet
-			printf("Predmet je v seznamu");
 			k = 1;
 			overeni = 1;
+		}
+		else {
+			printf("Lektor nema pristup do predmetu\n");
+			printf("------------------------------\n");
 		}
 		k = 1;
 	}
@@ -59,7 +66,7 @@ int main()
 
 	while (1) {
 		while (overeni == 0) {														//Zadani akce, kterou chceme provest
-			printf("\nZadejte akci (UKONCIT APLIKACI - 0, BODYC - 1, BODYT - 2, BODYZ - 3, ADD - 4, DEL - 5): ");
+			printf("Zadejte akci (UKONCIT APLIKACI - 0, BODYC - 1, BODYT - 2, BODYZ - 3, ADD - 4, DEL - 5): ");
 			scanf_s("%d", &akce);													//Nacteni akce
 
 			if (akce == 0) {														//Zajisteni spravnosti nacteni akci
@@ -78,30 +85,40 @@ int main()
 		char predmetyS[10][50];
 
 		while (overeni == 0) {														//Overeni, zda student existuje
-			printf("\nZadejte jmeno studenta: ");
+			printf("------------------------------\n");
+			printf("Zadejte jmeno studenta: ");
 			scanf_s("%s", jmeno, 100);												//Nacteni jmena studenta
-			if ((overeniJmena(jmeno, studenti) and overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) and (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
+
+			printf("------------------------------\n");
+			if ((overeniJmena(jmeno, studenti) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 				//printf("Zadali jste spravne jmeno\n");
 				Body(predmet, jmeno, studenti, akce);
 				studenti = fopen("studenti.txt", "a+");
 				overeni = 1;
 			}
-			else if (akce == 4 or akce == 5) {
-				switch (akce) {
-
-				case 4: add(predmet, jmeno, studenti);overeni = 1;break;studenti = fopen("studenti.txt", "a+");
-				case 5: del(predmet, jmeno, studenti);overeni = 1;break;studenti = fopen("studenti.txt", "a+");
+			else if ((overeniJmena(jmeno, studenti)) && (akce == 5)) {
+				del(predmet, jmeno, studenti);
+				overeni = 1;
+				studenti = fopen("studenti.txt", "a+");
+			}
+			else if (akce == 4) {
+				if (jmeno[strlen(jmeno) - 1] != '\n') {
+					strcat(jmeno, "\n");
 				}
+				add(predmet, jmeno, studenti);
+				overeni = 1;
+				studenti = fopen("studenti.txt", "a+");
 			}
 			else {
 				int i;
 				printf("Zadali jste nespravne jmeno\n");
+				printf("------------------------------\n");
 				rewind(studenti);
 				for (i = 0; i < pocetpredmetuS; i++) {
 					strcpy(predmetyS[i], "");
 				}
 				pocetpredmetuS = 0;
-				continue;
+				break;
 			}
 		}
 		overeni = 0;

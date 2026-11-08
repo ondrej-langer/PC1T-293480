@@ -4,7 +4,12 @@ int overeniJmena(char* jmeno, FILE* soubor) {									//Funkce pro overeni nacte
 	char jeJmeno[100];
 	char jmeno0[100];
 
-	strcat(jmeno, "\n");
+	rewind(soubor);
+
+	if (jmeno[strlen(jmeno) - 1] != '\n') {
+		strcat(jmeno, "\n");
+	}
+
 	while (fgets(jeJmeno, 100, soubor)) {
 		if (strcmp(jmeno, jeJmeno) == 0) {
 			return 1;
@@ -22,10 +27,12 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 		fgets(radek, 100, soubor);
 		tradek = strtok(radek, " \n");
 	}
+	else {
+		tradek = nullptr;
+	}
 
 	while (tradek != NULL) {													//Prepsani jednotlivých zkratek předmětů do pole
 		strcpy(predmety[*pocetpredmetu], tradek);
-		printf("%s", predmety[*pocetpredmetu]);
 		tradek = strtok(NULL, " \n");
 		(*pocetpredmetu)++;
 	}
@@ -38,7 +45,7 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 	return 0;
 }
 
-void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Prideleni bodu za cvika
+void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {					//Prideleni bodu
 	char radek[100];
 	char* tradek = nullptr;
 	int body = 0;
@@ -98,25 +105,32 @@ void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {							//Pridelen
 			}
 
 			fprintf(temp, radek);												//Vlozi do souboru
-			printf("%s", radek);												//Vytiskne body
-			
+			printf("\n%s\n", radek);											//Vytiskne body
+			printf("------------------------------\n");
+
 			if (celkem >= 90) {
-				printf("Vysledna znamka z premdetu: A");
+				printf("Vysledna znamka z premdetu: A\n");
+				printf("------------------------------\n");
 			}
 			else if (celkem >= 80) {
-				printf("Vysledna znamka z predmetu: B");
+				printf("Vysledna znamka z predmetu: B\n");
+				printf("------------------------------\n");
 			}
 			else if (celkem >= 70) {
-				printf("Vysledna znamka z predmetu: C");
+				printf("Vysledna znamka z predmetu: C\n");
+				printf("------------------------------\n");
 			}
 			else if (celkem >= 60) {
-				printf("Vysledna znamka z predmetu: D");
+				printf("Vysledna znamka z predmetu: D\n");
+				printf("------------------------------\n");
 			}
 			else if (celkem >= 50) {
-				printf("Vysledna znamka z predmetu: E");
+				printf("Vysledna znamka z predmetu: E\n");
+				printf("------------------------------\n");
 			}
 			else {
-				printf("Vysledna znamka z predmetu: F");
+				printf("Vysledna znamka z predmetu: F\n");
+				printf("------------------------------\n");
 			}
 		}
 		else {
@@ -152,11 +166,12 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 			tradek = strtok(pomocny_radek, " \n");
 			while (tradek != NULL) {											//Prohledava, jestli je student zapsan
 				if (strcmp(tradek, predmet) == 0) {
-					printf("Studen je jiz zapsan v predmetu");
+					printf("Studen je jiz zapsan v predmetu\n");
+					printf("------------------------------\n");
 					fprintf(temp, radek);
 					k = 0;
 				}
-				tradek = strtok(NULL, " ");
+				tradek = strtok(NULL, " \n");
 				pocetpredmetu++;
 			}
 			if (k == 1) {														//Pokud neni student zapsany, zapise se zde
@@ -172,7 +187,8 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 				strcat(predmet0, "\n");
 				fprintf(temp, predmet0);
 				fprintf(temp, "0 0 0\n");
-				printf("Student byl uspesne pridan do predmetu");
+				printf("Student byl uspesne pridan do predmetu\n");
+				printf("------------------------------\n");
 			}
 			k = 0;
 		}
@@ -187,7 +203,8 @@ void add(char* predmet, char* jmeno, FILE* soubor) {
 		fprintf(temp, predmet0);
 		fprintf(temp, predmet0);
 		fprintf(temp, "0 0 0\n");
-		printf("Student byl uspesne vytvoren a pridan do predmetu");
+		printf("Student byl uspesne vytvoren a pridan do predmetu\n");
+		printf("------------------------------\n");
 	}
 
 	fclose(soubor);
@@ -203,6 +220,7 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 	char* tradek = nullptr;
 	int pocetpredmetu = 0;
 	char predmet0[100];
+	unsigned short k = 0;
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -213,9 +231,10 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 		if (strcmp(radek, jmeno) == 0) {
 			fgets(radek, 100, soubor);
 			tradek = strtok(radek, " \n");
-			while (tradek != NULL) {											//Doplnit, jak ma dal program postupovat v mazani
+			while (tradek != NULL) {
 				if (strcmp(tradek, predmet) == 0) {
 					tradek = strtok(NULL, " \n");
+					k = 1;														//Zjisti, ze student je zapsan v predmetu
 				}
 				else {
 					strcat(pomocny_radek, tradek);
@@ -224,7 +243,7 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 					pocetpredmetu++;
 				}
 			}
-			if (pocetpredmetu > 0) {
+			if (pocetpredmetu > 0 && k == 1) {
 				fprintf(temp, jmeno);
 				pomocny_radek[strlen(pomocny_radek) - 1] = '\n';
 				fprintf(temp, pomocny_radek);
@@ -236,10 +255,21 @@ void del(char* predmet, char* jmeno, FILE* soubor) {
 					fgets(radek, 100, soubor);
 				}
 				fgets(radek, 100, soubor);
+				printf("Student byl uspesne vymazan\n");
+				printf("------------------------------\n");
+			}
+			else if (pocetpredmetu == 0 && k == 1) {
+				fgets(radek, 100, soubor);
+				fgets(radek, 100, soubor);
+				printf("Student byl uspesne vymazan\n");
+				printf("------------------------------\n");
 			}
 			else {
-				fgets(radek, 100, soubor);
-				fgets(radek, 100, soubor);
+				fprintf(temp, jmeno);
+				pomocny_radek[strlen(pomocny_radek) - 1] = '\n';
+				fprintf(temp, pomocny_radek);
+				printf("Student neni zapsan v predmetu\n");
+				printf("------------------------------\n");
 			}
 		}
 		else {
@@ -261,8 +291,9 @@ void admin(FILE* soubor) {
 	char predmet[100];
 
 
-	printf("\nZadejte jmeno lektora pro pridani: ");
+	printf("Zadejte jmeno lektora pro pridani: ");
 	scanf_s("%s", jmeno, 100);
+	printf("------------------------------\n");
 	strcat(jmeno, "\n");
 
 	FILE* temp;
@@ -273,25 +304,30 @@ void admin(FILE* soubor) {
 	while (fgets(radek, 100, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
 			fprintf(temp, radek);
-			printf("\nLektor je jiz pridan");
-			printf("\nZadejte predmet, do ktereho chcete lektora pridat: ");
+			printf("Lektor je jiz pridan\n");
+			printf("------------------------------\n");
+			printf("Zadejte predmet, do ktereho chcete lektora pridat: ");
 			scanf_s("%s", predmet, 100);
+			printf("------------------------------\n");
 			fgets(radek, 100, soubor);
 			strcpy(pomocny_radek, radek);
 			tradek = strtok(pomocny_radek, " \n");
-			while (tradek != NULL) {											//Prohledava, jestli je student zapsan
+			while (tradek != NULL) {											//Prohledava, jestli je lektor zapsan
 				if (strcmp(tradek, predmet) == 0) {
-					printf("Lektor je jiz pridan do predmetu");
+					printf("Lektor je jiz pridan do predmetu\n");
+					printf("------------------------------\n");
 					fprintf(temp, radek);
 					k = 0;
 				}
-				tradek = strtok(NULL, " ");
+				tradek = strtok(NULL, " \n");
 			}
-			if (k == 1) {														//Pokud neni student zapsany, zapise se zde
+			if (k == 1) {														//Pokud neni lektor zapsany, zapise se zde
 				radek[strcspn(radek, "\n")] = ' ';
 				strcat(radek, predmet);
 				strcat(radek, "\n");
 				fprintf(temp, radek);
+				printf("Lektor byl uspesne pridan do predmetu\n");
+				printf("------------------------------\n");
 			}
 			k = 0;
 		}
