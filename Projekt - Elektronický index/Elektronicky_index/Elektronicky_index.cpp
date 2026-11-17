@@ -21,8 +21,7 @@ int main()
 		printf("Zadejte sve jmeno: ");
 		scanf_s("%s", jmeno, 100);												//Nacteni jmena lektora
 		printf("------------------------------\n");
-		if (overeniJmena(jmeno, lektori) == 1) {								//Vyhodnoceni, zda lektor existuje
-			//printf("Zadali jste spravne jmeno\n");
+		if (overeniJmena(jmeno, lektori, 1) == 1) {								//Vyhodnoceni, zda lektor existuje
 			overeni = 1;
 		}
 		else if (strcmp(jmeno, "admin\n") == 0) {
@@ -45,7 +44,8 @@ int main()
 	unsigned short k = 0;
 
 	while (overeni == 0) {														//Zjisteni opravneni na predmet
-		printf("Zadejte predmet pro editaci (napr.: ZKR,PC1T,...): ");
+		
+		printf("Zadejte predmet pro editaci (napr.: BPC-PC1T,MPC-KOM,...): ");
 		scanf_s("%s", predmet, 100);											//Nacteni predmetu pro editaci
 		printf("------------------------------\n");
 		// &pocetpredmetu: predani adresou (pointer), aby funkce menila hodnotu v main
@@ -69,7 +69,9 @@ int main()
 
 	while (1) {
 		while (overeni == 0) {														//Zadani akce, kterou chceme provest
-			printf("Zadejte akci (UKONCIT APLIKACI - 0, BODYC - 1, BODYT - 2, BODYZ - 3, ADD - 4, DEL - 5): ");
+			printf("Dostupne akce:\n");
+			printf("UKONCIT APLIKACI = 0\nBODY ZA CVICENI  = 1\nBODY ZA TESTY    = 2\nBODY ZA ZKOUSKU  = 3\nPRIDAT STUDENTA  = 4\nODEBRAT STUDENTA = 5\n\n");
+			printf("Zadejte akci: ");
 			// scanf_s u int vyzaduje jen adresu &akce (velikost bufferu se resi jen u textu)
 			scanf_s("%d", &akce);													//Nacteni akce
 
@@ -95,13 +97,13 @@ int main()
 
 			printf("------------------------------\n");
 			// zleva doprava (short-circuit): kdyz 1. cast vrati 0, 2. funkce se ani nespusti
-			if ((overeniJmena(jmeno, studenti) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
+			if ((overeniJmena(jmeno, studenti, 0) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 				//printf("Zadali jste spravne jmeno\n");
 				Body(predmet, jmeno, studenti, akce);
 				studenti = fopen("studenti.txt", "a+");
 				overeni = 1;
 			}
-			else if ((overeniJmena(jmeno, studenti)) && (akce == 5)) {
+			else if ((overeniJmena(jmeno, studenti, 0)) && (akce == 5)) {
 				del(predmet, jmeno, studenti);
 				overeni = 1;
 				studenti = fopen("studenti.txt", "a+");
