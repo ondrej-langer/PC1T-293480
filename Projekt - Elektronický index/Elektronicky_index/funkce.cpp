@@ -1,29 +1,49 @@
 #include <iostream>
 
-int overeniJmena(char* jmeno, FILE* soubor, int a) {									//Funkce pro overeni nacteneho jmena
+int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce pro overeni nacteneho jmena
 	char radek[100];
-	char jmeno0[100];
+	char heslo[100];
 
 	rewind(soubor);
 
 	if (jmeno[strlen(jmeno) - 1] != '\n') {
 		strcat(jmeno, "\n");
 	}
+	strcat(id, "\n");
 
 	while (fgets(radek, 100, soubor)) {
 		if (strcmp(jmeno, radek) == 0) {
-			if (a == 1) {
+			fgets(radek, 100, soubor);
+			if ((a == 1) && (strcmp(id, radek) == 0)) {
+				fgets(radek, 100, soubor);
+				printf("Zadejte heslo: ");
+				scanf_s("%s", heslo, 100);
+				strcat(heslo, "\n");
+				printf("------------------------------\n");
+				while (strcmp(heslo, radek) != 0) {
+					printf("Zadali jste spatne heslo\n");
+					printf("------------------------------\n");
+					printf("Zadejte heslo: ");
+					scanf_s("%s", heslo, 100);
+					strcat(heslo, "\n");
+					printf("------------------------------\n");
+				}
+				printf("Uspesne prihlaseni\n");
+				printf("------------------------------\n");
+
 				printf("Dostupne predmety:\n");
 				fgets(radek, 100, soubor);
 				printf("%s\n", radek);
 				rewind(soubor);
 				while (fgets(radek, 100, soubor)) {
 					if (strcmp(jmeno, radek) == 0) {
+						fgets(radek, 100, soubor);
+						fgets(radek, 100, soubor);
 						return 1;
 					}
 				}
 			}
-			else {
+			else if (strcmp(id, radek) == 0) {
 				return 1;
 			}
 		}
@@ -305,6 +325,7 @@ void admin(FILE* soubor) {
 	char predmet[100];
 	char prefix[100];
 	char seznamprefixu[16][4] = { "BPC", "BPA", "BKC", "BKA", "MPC", "MPA", "MKC", "MKA", "DPC", "DPA", "DKC", "DKA", "XPC", "XPA", "XKC", "XKA" };
+	char id[100];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -331,6 +352,8 @@ void admin(FILE* soubor) {
 		printf("------------------------------\n");
 		printf("Nove heslo uspesne nastaveno\n");
 		printf("------------------------------\n");
+		printf("Neexistuji zadni lektori\n");
+		printf("------------------------------\n");
 	}
 	else {
 		strcat(heslo, "\n");
@@ -344,12 +367,16 @@ void admin(FILE* soubor) {
 		}
 		printf("Uspesne prihlaseni\n");
 		printf("------------------------------\n");
-	}
-
-
-	printf("Lektori a jejich predmety: \n");
-	while (fgets(radek, 100, soubor)) {
-		printf(radek);
+		printf("Lektori a jejich predmety: \n");
+		while (fgets(radek, 100, soubor)) {
+			printf(radek);
+			fgets(radek, 100, soubor);
+			printf(radek);
+			fgets(radek, 100, soubor);
+			fgets(radek, 100, soubor);
+			printf(radek);
+		}
+		printf("------------------------------\n");
 	}
 
 	printf("Zadejte jmeno lektora pro pridani: ");
@@ -357,66 +384,85 @@ void admin(FILE* soubor) {
 	printf("------------------------------\n");
 	strcat(jmeno, "\n");
 
+	printf("Zadejte ID lektora pro pridani: ");
+	scanf_s(" %s", id, 100);
+	strcat(id, "\n");
+	printf("------------------------------\n");
+
 	rewind(soubor);
 
 	while (fgets(radek, 100, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
-			fprintf(temp, radek);
-			printf("Lektor je jiz pridan\n");
-			printf("------------------------------\n\n");
-			printf("Dostupne prefixy:\n");
-			printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
-			printf("Zadejte predmet (format PREFIX-ZKRATKA), do ktereho chcete lektora pridat: ");
-			scanf_s(" %[^-]-%s", prefix, 100, predmet, 100);
-			printf("------------------------------\n");
-			while (1) {
-				for (int i = 0; i < 16; i++) {
-					if (strcmp(prefix, seznamprefixu[i]) == 0) {
-						k = 0;
+			fgets(radek, 100, soubor);
+			if (strcmp(radek, id) == 0) {
+				fprintf(temp, jmeno);
+				fprintf(temp, radek);
+				printf("Lektor je jiz pridan\n");
+				printf("------------------------------\n\n");
+				printf("Dostupne prefixy:\n");
+				printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
+				printf("Zadejte predmet (format PREFIX-ZKRATKA), do ktereho chcete lektora pridat: ");
+				scanf_s(" %[^-]-%s", prefix, 100, predmet, 100);
+				printf("------------------------------\n");
+				while (1) {
+					for (int i = 0; i < 16; i++) {
+						if (strcmp(prefix, seznamprefixu[i]) == 0) {
+							k = 0;
+							break;
+						}
+					}
+					if (k == 0) {
 						break;
 					}
+					else {
+						printf("Zadali jste spatny prefix\n");
+						printf("Zadejte spravny prefix: ");
+						scanf_s("%s", prefix, 100);
+					}
 				}
-				if (k == 0) {
-					break;
-				}
-				else {
-					printf("Zadali jste spatny prefix\n");
-					printf("Zadejte spravny prefix: ");
-					scanf_s("%s", prefix, 100);
-				}
-			}
-			k = 1;
-			strcat(prefix, "-");
-			strcat(prefix, predmet);
-			strcpy(predmet, prefix);
+				k = 1;
+				strcat(prefix, "-");
+				strcat(prefix, predmet);
+				strcpy(predmet, prefix);
 
-			fgets(radek, 100, soubor);
-			strcpy(pomocny_radek, radek);
-			tradek = strtok(pomocny_radek, " \n");
-			while (tradek != NULL) {											//Prohledava, jestli je lektor zapsan
-				if (strcmp(tradek, predmet) == 0) {
-					printf("Lektor je jiz pridan do predmetu\n");
-					printf("------------------------------\n");
-					fprintf(temp, radek);
-					k = 0;
-				}
-				tradek = strtok(NULL, " \n");
-			}
-			if (k == 1) {														//Pokud neni lektor zapsany, zapise se zde
-				radek[strcspn(radek, "\n")] = ' ';
-				strcat(radek, predmet);
-				strcat(radek, "\n");
+				fgets(radek, 100, soubor);
 				fprintf(temp, radek);
-				printf("Lektor byl uspesne pridan do predmetu\n");
-				printf("------------------------------\n");
+				fgets(radek, 100, soubor);
+				strcpy(pomocny_radek, radek);
+				tradek = strtok(pomocny_radek, " \n");
+				while (tradek != NULL) {											//Prohledava, jestli je lektor zapsan
+					if (strcmp(tradek, predmet) == 0) {
+						printf("Lektor je jiz pridan do predmetu\n");
+						printf("------------------------------\n");
+						fprintf(temp, radek);
+						k = 0;
+					}
+					tradek = strtok(NULL, " \n");
+				}
+				if (k == 1) {														//Pokud neni lektor zapsany, zapise se zde
+					radek[strcspn(radek, "\n")] = ' ';
+					strcat(radek, predmet);
+					strcat(radek, "\n");
+					fprintf(temp, radek);
+					printf("Lektor byl uspesne pridan do predmetu\n");
+					printf("------------------------------\n");
+				}
+				k = 0;
 			}
-			k = 0;
+			else {
+				fprintf(temp, jmeno);
+				fprintf(temp, radek);
+			}
+
 		}
 		else {																	//Kdyz neexistuje jmeno vubec, vytiskne vsechny radky
 			fprintf(temp, radek);
 		}
 	}
-	if (k == 1) {																//Vytiskne do souboru nove jmeno a rovnou s predmetem
+	if (k == 1) {																//Vytiskne do souboru nove jmeno, id, heslo a rovnou s predmety
+		printf("Zadejte nove heslo pro lektora: ");
+		scanf_s(" %s", heslo, 100);
+
 		printf("Dostupne prefixy:\n");
 		printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
 		printf("Zadejte predmet (format PREFIX-ZKRATKA), do ktereho chcete lektora pridat: ");
@@ -443,6 +489,9 @@ void admin(FILE* soubor) {
 		strcpy(predmet, prefix);
 		printf("------------------------------\n");
 		fprintf(temp, jmeno);
+		fprintf(temp, id);
+		strcat(heslo, "\n");
+		fprintf(temp, heslo);
 		strcat(predmet, "\n");
 		fprintf(temp, predmet);
 		printf("Lektor byl uspesne vytvoren a pridan do predmetu\n");
