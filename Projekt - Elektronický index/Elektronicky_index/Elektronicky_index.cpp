@@ -1,6 +1,6 @@
 // Elektronicky_index.cpp : Defines the entry point for the application.
 //
-//SMAZAT TOTO - upravit zadavani akce a bodu (jsou to inty) a prefixu (aby bylo zajistena pomlcka) + pridat fci na zobrazeni studentu a jejich bodu v predmetu
+//pridat fci na zobrazeni studentu a jejich bodu v predmetu
 
 #include "Elektronicky_index.h"
 #include "funkce.h"
@@ -35,6 +35,8 @@ int main()
 				scanf_s(" %99[^\n]", id, (unsigned)sizeof(id));
 				printf("------------------------------\n");
 			}
+
+
 			if (overeniJmena(jmeno, id, lektori, 1) == 1) {							//Vyhodnoceni, zda lektor existuje
 				break;
 			}
@@ -78,11 +80,17 @@ int main()
 			}
 			
 			while (1) {														//Zadani akce, kterou chceme provest
-				printf("Dostupne akce:\n");
+				printf("Dostupne akce:\n\n");
 				printf("UKONCIT APLIKACI = 0\nBODY ZA CVICENI  = 1\nBODY ZA TESTY    = 2\nBODY ZA ZKOUSKU  = 3\nPRIDAT STUDENTA  = 4\nODEBRAT STUDENTA = 5\nZMENIT PREDMET   = 6\nODHLASIT SE      = 7\n\n");
 				printf("Zadejte akci: ");
 				// scanf_s u int vyzaduje jen adresu &akce (velikost bufferu se resi jen u textu)
-				scanf_s("%d", &akce);													//Nacteni akce
+				char vstup[100];
+				char* konec = nullptr;
+				scanf_s(" %99[^\n]", vstup, (unsigned)sizeof(vstup));
+				akce = (int)strtol(vstup, &konec, 10); //&konec = ukazatel na ukazatel, fce potrebuje zmenit kam ukazatel miri
+				if (*konec != '\0') {
+					akce = -1; // vynutí přechod do větve else
+				}													//Nacteni akce
 
 				if (akce == 0) {														//Zajisteni spravnosti nacteni akci
 					return 0;
@@ -92,7 +100,9 @@ int main()
 					break;
 				}
 				else {
-					printf("Zadali jste špatnou akci");
+					printf("------------------------------\n");
+					printf("Zadali jste spatnou akci\n");
+					printf("------------------------------\n");
 				}
 			}
 
@@ -120,7 +130,7 @@ int main()
 
 				printf("------------------------------\n");
 				// zleva doprava (short-circuit): kdyz 1. cast vrati 0, 2. funkce se ani nespusti
-				if ((overeniJmena(jmeno, id, studenti, 0) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
+				if ((overeniJmena(jmeno, id, studenti, 0) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, 0, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 					//printf("Zadali jste spravne jmeno\n");
 					Body(predmet, jmeno, id, studenti, akce);
 					studenti = fopen("studenti.txt", "a+");

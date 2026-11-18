@@ -121,8 +121,16 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 				case 2:printf("Zadejte pocet bodu k prideleni za testy: ");break;
 				case 3:printf("Zadejte pocet bodu k prideleni za zkousku: ");break;
 				}
-				scanf_s("%d", &body);
+				
+				char vstup[100];
+				char* konec = nullptr;
+				
+				scanf_s(" %99[^\n]", vstup, (unsigned)sizeof(vstup));
+				body = (int)strtol(vstup, &konec, 10);
 				celkem = body + bodyC + bodyT + bodyZ;
+				if (*konec != '\0') {
+					celkem = -1;
+				}
 
 				while ((celkem < 0) or (celkem > 100)) {							//Jestli nepresahly body limit
 					printf("Body prevysily hodnotu 100 nebo byly mensi nez 0\n");
@@ -131,8 +139,12 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 					case 2: printf("Zadejte jiny pocet bodu k prideleni za testy: ");break;
 					case 3: printf("Zadejte jiny pocet bodu k prideleni za zkousku: ");break;
 					}
-					scanf_s("%d", &body);
+					scanf_s(" %99[^\n]", vstup, (unsigned)sizeof(vstup));
+					body = (int)strtol(vstup, &konec, 10);
 					celkem = body + bodyC + bodyT + bodyZ;
+					if (*konec != '\0') {
+						celkem = -1;
+					}
 				}
 
 				switch (akce) {														//Vytvori novy radek s body
@@ -399,6 +411,7 @@ void admin(FILE* soubor) {
 			fgets(radek, 100, soubor);
 			fgets(radek, 100, soubor);
 			printf(radek);
+			printf("\n");
 		}
 		printf("------------------------------\n");
 	}
@@ -420,14 +433,13 @@ void admin(FILE* soubor) {
 			fprintf(temp, radek);
 			fgets(radek, 100, soubor);
 			if (strcmp(radek, id) == 0) {
-				fprintf(temp, jmeno);
 				fprintf(temp, radek);
 				printf("Lektor je jiz pridan\n");
 				printf("------------------------------\n\n");
 				printf("Dostupne prefixy:\n");
 				printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
-				printf("Zadejte predmet (format PREFIX-ZKRATKA), do ktereho chcete lektora pridat: ");
-				scanf_s(" %[^-]-%s", prefix, 100, predmet, 100);
+				printf("Zadejte prefix predmetu, do ktereho chcete lektora pridat: ");
+				scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
 				printf("------------------------------\n");
 				while (1) {
 					for (int i = 0; i < 16; i++) {
@@ -441,12 +453,19 @@ void admin(FILE* soubor) {
 					}
 					else {
 						printf("Zadali jste spatny prefix\n");
+						printf("------------------------------\n");
 						printf("Zadejte spravny prefix: ");
 						scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+						printf("------------------------------\n");
 					}
 				}
 				k = 1;
 				strcat(prefix, "-");
+				
+				printf("Zadejte zkratku predmetu, do ktereho chcete lektora pridat: ");
+				scanf_s(" %99[^\n]", predmet, (unsigned)sizeof(predmet));
+				printf("------------------------------\n");
+
 				strcat(prefix, predmet);
 				strcpy(predmet, prefix);
 
@@ -489,8 +508,9 @@ void admin(FILE* soubor) {
 
 		printf("Dostupne prefixy:\n");
 		printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
-		printf("Zadejte predmet (format PREFIX-ZKRATKA), do ktereho chcete lektora pridat: ");
-		scanf_s(" %[^-]-%s", prefix, 100, predmet, 100);
+		printf("Zadejte prefix predmetu, do ktereho chcete lektora pridat: ");
+		scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+		printf("------------------------------\n");
 		while (1) {
 			for (int i = 0; i < 16; i++) {
 				if (strcmp(prefix, seznamprefixu[i]) == 0) {
@@ -506,9 +526,15 @@ void admin(FILE* soubor) {
 				printf("------------------------------\n");
 				printf("Zadejte spravny prefix: ");
 				scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+				printf("------------------------------\n");
 			}
 		}
 		strcat(prefix, "-");
+
+		printf("Zadejte zkratku predmetu, do ktereho chcete lektora pridat: ");
+		scanf_s(" %99[^\n]", predmet, (unsigned)sizeof(predmet));
+		printf("------------------------------\n");
+
 		strcat(prefix, predmet);
 		strcpy(predmet, prefix);
 		printf("------------------------------\n");
