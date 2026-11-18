@@ -75,6 +75,11 @@ int main()
 				else {
 					printf("Lektor nema pristup do predmetu\n");
 					printf("------------------------------\n");
+					printf("Dostupne predmety:\n");
+					for (int i = 0; i < pocetpredmetu; i++) {										//Hledani predmetu v poli predmety
+						printf("%s ", predmety[i]);
+					}
+					printf("\n\n");
 				}
 				k = 1;
 			}
@@ -109,6 +114,11 @@ int main()
 			if (akce == 6) {
 				overeni = 1;
 				printf("------------------------------\n");
+				printf("Dostupne predmety:\n");
+				for (int i = 0; i < pocetpredmetu; i++) {										//Hledani predmetu v poli predmety
+					printf("%s ", predmety[i]);
+				}
+				printf("\n\n");
 				continue;
 			}
 			
