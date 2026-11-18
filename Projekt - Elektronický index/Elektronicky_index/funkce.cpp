@@ -183,7 +183,7 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 				}
 			}
 			else {
-
+				fprintf(temp, radek);
 			}
 		}
 		else {

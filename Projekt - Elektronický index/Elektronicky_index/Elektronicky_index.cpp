@@ -1,6 +1,6 @@
 // Elektronicky_index.cpp : Defines the entry point for the application.
 //
-//pridat fci na zobrazeni studentu a jejich bodu v predmetu
+//pridat fci na zobrazeni studentu a jejich bodu v predmetu, upravit strcat rezervy
 
 #include "Elektronicky_index.h"
 #include "funkce.h"
