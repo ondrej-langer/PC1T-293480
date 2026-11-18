@@ -113,7 +113,7 @@ int main()
 				// zleva doprava (short-circuit): kdyz 1. cast vrati 0, 2. funkce se ani nespusti
 				if ((overeniJmena(jmeno, id, studenti, 0) && overeniPredmetu(predmet, &pocetpredmetuS, predmetyS, k, studenti) == 1) && (akce >= 1 && akce <= 3)) {								//Vyhodnoceni, zda student existuje a jestli je zapsan v predmetu
 					//printf("Zadali jste spravne jmeno\n");
-					Body(predmet, jmeno, studenti, akce);
+					Body(predmet, jmeno, id, studenti, akce);
 					studenti = fopen("studenti.txt", "a+");
 					break;
 				}

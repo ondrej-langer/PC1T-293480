@@ -9,7 +9,9 @@ int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce 
 	if (jmeno[strlen(jmeno) - 1] != '\n') {
 		strcat(jmeno, "\n");
 	}
-	strcat(id, "\n");
+	if (id[strlen(id) - 1] != '\n') {
+		strcat(id, "\n");
+	}
 
 	while (fgets(radek, 100, soubor)) {
 		if (strcmp(jmeno, radek) == 0) {
@@ -78,7 +80,7 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 	return 0;
 }
 
-void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {					//Prideleni bodu
+void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//Prideleni bodu
 	char radek[100];
 	char* tradek = nullptr;
 	int body = 0;
@@ -95,75 +97,81 @@ void Body(char* predmet, char* jmeno, FILE* soubor, int akce) {					//Prideleni 
 
 	while (fgets(radek, 100, soubor)) {	
 		if (strcmp(radek, jmeno) == 0) {										//Hleda jmeno
-
 			fprintf(temp, radek);
 			fgets(radek, 100, soubor);
-			fprintf(temp, radek);
-			fgets(radek, 100, soubor);
-
-			while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
+			if (strcmp(radek, id) == 0) {
 				fprintf(temp, radek);
 				fgets(radek, 100, soubor);
-			}
+				fprintf(temp, radek);
+				fgets(radek, 100, soubor);
 
-			fprintf(temp, radek);												//Ma predmet, nacte dalsi radek s body, nacte z klavesnice body, prideli
-			fgets(radek, 100, soubor);
-			tradek = strtok(radek, " ");
-			bodyC = strtol(radek, NULL, 10);
-			bodyT = strtol(strtok(NULL, " "), NULL, 10);
-			bodyZ = strtol(strtok(NULL, " "), NULL, 10);
-			switch (akce) {
-			case 1:printf("Zadejte pocet bodu k prideleni za cviceni: ");break;
-			case 2:printf("Zadejte pocet bodu k prideleni za testy: ");break;
-			case 3:printf("Zadejte pocet bodu k prideleni za zkousku: ");break;
-			}
-			scanf_s("%d", &body);
-			celkem = body + bodyC + bodyT + bodyZ;
-			
-			while ((celkem < 0) or (celkem > 100)) {							//Jestli nepresahly body limit
-				printf("Body prevysily hodnotu 100 nebo byly mensi nez 0\n");
+				while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
+					fprintf(temp, radek);
+					fgets(radek, 100, soubor);
+				}
+
+				fprintf(temp, radek);												//Ma predmet, nacte dalsi radek s body, nacte z klavesnice body, prideli
+				fgets(radek, 100, soubor);
+				tradek = strtok(radek, " ");
+				bodyC = strtol(radek, NULL, 10);
+				bodyT = strtol(strtok(NULL, " "), NULL, 10);
+				bodyZ = strtol(strtok(NULL, " "), NULL, 10);
 				switch (akce) {
-				case 1: printf("Zadejte jiny pocet bodu k prideleni za cviceni: ");break;
-				case 2: printf("Zadejte jiny pocet bodu k prideleni za testy: ");break;
-				case 3: printf("Zadejte jiny pocet bodu k prideleni za zkousku: ");break;
+				case 1:printf("Zadejte pocet bodu k prideleni za cviceni: ");break;
+				case 2:printf("Zadejte pocet bodu k prideleni za testy: ");break;
+				case 3:printf("Zadejte pocet bodu k prideleni za zkousku: ");break;
 				}
 				scanf_s("%d", &body);
 				celkem = body + bodyC + bodyT + bodyZ;
-			}
-			
-			switch (akce) {														//Vytvori novy radek s body
-			case 1:sprintf(radek, "%d %d %d\n", body + bodyC, bodyT, bodyZ);break;
-			case 2:sprintf(radek, "%d %d %d\n", bodyC, body + bodyT, bodyZ);break;
-			case 3:sprintf(radek, "%d %d %d\n", bodyC, bodyT, body + bodyZ);break;
-			}
 
-			fprintf(temp, radek);												//Vlozi do souboru
-			printf("\n%s\n", radek);											//Vytiskne body
-			printf("------------------------------\n");
+				while ((celkem < 0) or (celkem > 100)) {							//Jestli nepresahly body limit
+					printf("Body prevysily hodnotu 100 nebo byly mensi nez 0\n");
+					switch (akce) {
+					case 1: printf("Zadejte jiny pocet bodu k prideleni za cviceni: ");break;
+					case 2: printf("Zadejte jiny pocet bodu k prideleni za testy: ");break;
+					case 3: printf("Zadejte jiny pocet bodu k prideleni za zkousku: ");break;
+					}
+					scanf_s("%d", &body);
+					celkem = body + bodyC + bodyT + bodyZ;
+				}
 
-			if (celkem >= 90) {
-				printf("Vysledna znamka z premdetu: A\n");
+				switch (akce) {														//Vytvori novy radek s body
+				case 1:sprintf(radek, "%d %d %d\n", body + bodyC, bodyT, bodyZ);break;
+				case 2:sprintf(radek, "%d %d %d\n", bodyC, body + bodyT, bodyZ);break;
+				case 3:sprintf(radek, "%d %d %d\n", bodyC, bodyT, body + bodyZ);break;
+				}
+
+				fprintf(temp, radek);												//Vlozi do souboru
+				printf("\n%s\n", radek);											//Vytiskne body
 				printf("------------------------------\n");
-			}
-			else if (celkem >= 80) {
-				printf("Vysledna znamka z predmetu: B\n");
-				printf("------------------------------\n");
-			}
-			else if (celkem >= 70) {
-				printf("Vysledna znamka z predmetu: C\n");
-				printf("------------------------------\n");
-			}
-			else if (celkem >= 60) {
-				printf("Vysledna znamka z predmetu: D\n");
-				printf("------------------------------\n");
-			}
-			else if (celkem >= 50) {
-				printf("Vysledna znamka z predmetu: E\n");
-				printf("------------------------------\n");
+
+				if (celkem >= 90) {
+					printf("Vysledna znamka z premdetu: A\n");
+					printf("------------------------------\n");
+				}
+				else if (celkem >= 80) {
+					printf("Vysledna znamka z predmetu: B\n");
+					printf("------------------------------\n");
+				}
+				else if (celkem >= 70) {
+					printf("Vysledna znamka z predmetu: C\n");
+					printf("------------------------------\n");
+				}
+				else if (celkem >= 60) {
+					printf("Vysledna znamka z predmetu: D\n");
+					printf("------------------------------\n");
+				}
+				else if (celkem >= 50) {
+					printf("Vysledna znamka z predmetu: E\n");
+					printf("------------------------------\n");
+				}
+				else {
+					printf("Vysledna znamka z predmetu: F\n");
+					printf("------------------------------\n");
+				}
 			}
 			else {
-				printf("Vysledna znamka z predmetu: F\n");
-				printf("------------------------------\n");
+
 			}
 		}
 		else {
@@ -393,6 +401,7 @@ void admin(FILE* soubor) {
 
 	while (fgets(radek, 100, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
+			fprintf(temp, radek);
 			fgets(radek, 100, soubor);
 			if (strcmp(radek, id) == 0) {
 				fprintf(temp, jmeno);
@@ -450,7 +459,6 @@ void admin(FILE* soubor) {
 				k = 0;
 			}
 			else {
-				fprintf(temp, jmeno);
 				fprintf(temp, radek);
 			}
 
