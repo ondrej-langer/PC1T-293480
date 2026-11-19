@@ -98,6 +98,8 @@ int main()
 				}													//Nacteni akce
 
 				if (akce == 0) {														//Zajisteni spravnosti nacteni akci
+					fclose(lektori);
+					fclose(studenti);
 					return 0;
 				}
 				else if (akce >= 1 && akce <= 7) {										//Ukonceni cyklu pri zadani spravne akce
