@@ -55,7 +55,7 @@ int main()
 		char predmet[100];
 		int pocetpredmetu = 0;
 		char predmety[10][50];
-		unsigned short k = 0;
+		unsigned short k = 0; //
 		
 		int akce = 0;														//Zhruba odsud TO DAT DO WHILU!!!
 		unsigned short overeni = 1;
