@@ -1,8 +1,10 @@
 #include <iostream>
+#define DELKA_RETEZCE 100
+#define DELKA_CTENI " %99[^\n]"
 
 int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce pro overeni nacteneho jmena
-	char radek[100];
-	char heslo[100];
+	char radek[DELKA_RETEZCE];
+	char heslo[DELKA_RETEZCE];
 
 	rewind(soubor);
 
@@ -13,20 +15,20 @@ int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce 
 		strcat(id, "\n");
 	}
 
-	while (fgets(radek, 100, soubor)) {
+	while (fgets(radek, DELKA_RETEZCE, soubor)) {
 		if (strcmp(jmeno, radek) == 0) {
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			if ((a == 1) && (strcmp(id, radek) == 0)) {
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				printf("Zadejte heslo: ");
-				scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+				scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 				strcat(heslo, "\n");
 				printf("------------------------------\n");
 				while (strcmp(heslo, radek) != 0) {
 					printf("Zadali jste spatne heslo\n");
 					printf("------------------------------\n");
 					printf("Zadejte heslo: ");
-					scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+					scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 					strcat(heslo, "\n");
 					printf("------------------------------\n");
 				}
@@ -34,13 +36,13 @@ int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce 
 				printf("------------------------------\n");
 
 				printf("Dostupne predmety:\n");
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				printf("%s\n", radek);
 				rewind(soubor);
-				while (fgets(radek, 100, soubor)) {
+				while (fgets(radek, DELKA_RETEZCE, soubor)) {
 					if (strcmp(jmeno, radek) == 0) {
-						fgets(radek, 100, soubor);
-						fgets(radek, 100, soubor);
+						fgets(radek, DELKA_RETEZCE, soubor);
+						fgets(radek, DELKA_RETEZCE, soubor);
 						return 1;
 					}
 				}
@@ -54,12 +56,12 @@ int overeniJmena(char* jmeno, char* id, FILE* soubor, int a) {									//Funkce 
 }
 
 int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], unsigned short k, FILE* soubor) { //Funkce pro overeni prava na predemet
-	char radek[100];
+	char radek[DELKA_RETEZCE];
 	char* tradek = nullptr;
 	int i;
 
 	if (k == 0) {																//Nacteni radku s predmety (pod jmenem) a pocatek deleni
-		fgets(radek, 100, soubor);
+		fgets(radek, DELKA_RETEZCE, soubor);
 		tradek = strtok(radek, " \n");
 	}
 	else {
@@ -81,12 +83,12 @@ int overeniPredmetu(char* predmet, int* pocetpredmetu, char (*predmety)[50], uns
 }
 
 void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//Prideleni bodu
-	char radek[100];
+	char radek[DELKA_RETEZCE];
 	char* tradek = nullptr;
 	int body = 0;
 	int bodyC, bodyT, bodyZ;
 	int celkem;
-	char predmet0[100];
+	char predmet0[DELKA_RETEZCE];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -95,23 +97,23 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 	strcat(predmet0, "\n");
 	rewind(soubor);																//Rewind kvuli naslednymu kopirovani a vytvareni novyho "studenti.txt"
 
-	while (fgets(radek, 100, soubor)) {	
+	while (fgets(radek, DELKA_RETEZCE, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Hleda jmeno
 			fprintf(temp, radek);
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			if (strcmp(radek, id) == 0) {
 				fprintf(temp, radek);
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				fprintf(temp, radek);
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 
 				while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
 					fprintf(temp, radek);
-					fgets(radek, 100, soubor);
+					fgets(radek, DELKA_RETEZCE, soubor);
 				}
 
 				fprintf(temp, radek);												//Ma predmet, nacte dalsi radek s body, nacte z klavesnice body, prideli
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				tradek = strtok(radek, " ");
 				bodyC = strtol(radek, NULL, 10);
 				bodyT = strtol(strtok(NULL, " "), NULL, 10);
@@ -122,10 +124,10 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 				case 3:printf("Zadejte pocet bodu k prideleni za zkousku: ");break;
 				}
 				
-				char vstup[100];
+				char vstup[DELKA_RETEZCE];
 				char* konec = nullptr;
 				
-				scanf_s(" %99[^\n]", vstup, (unsigned)sizeof(vstup));
+				scanf_s(DELKA_CTENI, vstup, (unsigned)sizeof(vstup));
 				body = (int)strtol(vstup, &konec, 10);
 				celkem = body + bodyC + bodyT + bodyZ;
 				if (*konec != '\0') {
@@ -139,7 +141,7 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 					case 2: printf("Zadejte jiny pocet bodu k prideleni za testy: ");break;
 					case 3: printf("Zadejte jiny pocet bodu k prideleni za zkousku: ");break;
 					}
-					scanf_s(" %99[^\n]", vstup, (unsigned)sizeof(vstup));
+					scanf_s(DELKA_CTENI, vstup, (unsigned)sizeof(vstup));
 					body = (int)strtol(vstup, &konec, 10);
 					celkem = body + bodyC + bodyT + bodyZ;
 					if (*konec != '\0') {
@@ -198,25 +200,25 @@ void Body(char* predmet, char* jmeno, char* id, FILE* soubor, int akce) {					//
 }
 
 void add(char* predmet, char* jmeno, char* id, FILE* soubor) {
-	char radek[100];
-	char pomocny_radek[100];
+	char radek[DELKA_RETEZCE];
+	char pomocny_radek[DELKA_RETEZCE];
 	char* tradek = nullptr;
 	int pocetpredmetu = 0;
 	unsigned short k = 1;
-	char predmet0[100];
+	char predmet0[DELKA_RETEZCE];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
 
 	rewind(soubor);
 
-	while (fgets(radek, 100, soubor)) {
+	while (fgets(radek, DELKA_RETEZCE, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
 			fprintf(temp, radek);
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			if (strcmp(radek, id) == 0) {
 				fprintf(temp, radek);
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				strcpy(pomocny_radek, radek);
 				tradek = strtok(pomocny_radek, " \n");
 				while (tradek != NULL) {											//Prohledava, jestli je student zapsan
@@ -235,7 +237,7 @@ void add(char* predmet, char* jmeno, char* id, FILE* soubor) {
 					strcat(radek, "\n");
 					fprintf(temp, radek);
 					for (int i = 0; i < (pocetpredmetu * 2); i++) {
-						fgets(radek, 100, soubor);
+						fgets(radek, DELKA_RETEZCE, soubor);
 						fprintf(temp, radek);
 					}
 					strcpy(predmet0, predmet);
@@ -274,12 +276,12 @@ void add(char* predmet, char* jmeno, char* id, FILE* soubor) {
 }
 
 void del(char* predmet, char* jmeno, char* id, FILE* soubor) {
-	char radek[100];
-	char pomocny_radek[100];
+	char radek[DELKA_RETEZCE];
+	char pomocny_radek[DELKA_RETEZCE];
 	strcpy(pomocny_radek, "");
 	char* tradek = nullptr;
 	int pocetpredmetu = 0;
-	char predmet0[100];
+	char predmet0[DELKA_RETEZCE];
 	unsigned short k = 0;
 
 	FILE* temp;
@@ -287,11 +289,11 @@ void del(char* predmet, char* jmeno, char* id, FILE* soubor) {
 
 	rewind(soubor);
 
-	while (fgets(radek, 100, soubor)) {
+	while (fgets(radek, DELKA_RETEZCE, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			if (strcmp(radek, id) == 0) {
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				tradek = strtok(radek, " \n");
 				while (tradek != NULL) {
 					if (strcmp(tradek, predmet) == 0) {
@@ -310,20 +312,20 @@ void del(char* predmet, char* jmeno, char* id, FILE* soubor) {
 					fprintf(temp, id);
 					pomocny_radek[strlen(pomocny_radek) - 1] = '\n';
 					fprintf(temp, pomocny_radek);
-					fgets(radek, 100, soubor);
+					fgets(radek, DELKA_RETEZCE, soubor);
 					strcpy(predmet0, predmet);
 					strcat(predmet0, "\n");
 					while (strcmp(radek, predmet0) != 0) {								//Dokud nema predmet, kopiruje radky
 						fprintf(temp, radek);
-						fgets(radek, 100, soubor);
+						fgets(radek, DELKA_RETEZCE, soubor);
 					}
-					fgets(radek, 100, soubor);
+					fgets(radek, DELKA_RETEZCE, soubor);
 					printf("Student byl uspesne vymazan\n");
 					printf("------------------------------\n");
 				}
 				else if (pocetpredmetu == 0 && k == 1) {
-					fgets(radek, 100, soubor);
-					fgets(radek, 100, soubor);
+					fgets(radek, DELKA_RETEZCE, soubor);
+					fgets(radek, DELKA_RETEZCE, soubor);
 					printf("Student byl uspesne vymazan\n");
 					printf("------------------------------\n");
 				}
@@ -352,16 +354,16 @@ void del(char* predmet, char* jmeno, char* id, FILE* soubor) {
 }
 
 void admin(FILE* soubor) {
-	char radek[100];
-	char pomocny_radek[100];
+	char radek[DELKA_RETEZCE];
+	char pomocny_radek[DELKA_RETEZCE];
 	char* tradek = nullptr;
 	unsigned short k = 1;
-	char jmeno[100];
-	char heslo[100];
-	char predmet[100];
-	char prefix[100];
+	char jmeno[DELKA_RETEZCE];
+	char heslo[DELKA_RETEZCE];
+	char predmet[DELKA_RETEZCE];
+	char prefix[DELKA_RETEZCE];
 	char seznamprefixu[16][4] = { "BPC", "BPA", "BKC", "BKA", "MPC", "MPA", "MKC", "MKA", "DPC", "DPA", "DKC", "DKA", "XPC", "XPA", "XKC", "XKA" };
-	char id[100];
+	char id[DELKA_RETEZCE];
 
 	FILE* temp;
 	temp = fopen("temp.txt", "w+");
@@ -369,20 +371,20 @@ void admin(FILE* soubor) {
 	rewind(soubor);
 
 	printf("Zadejte heslo: ");
-	scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+	scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 	printf("------------------------------\n");
-	if (fgets(radek, 100, soubor) == 0) {
+	if (fgets(radek, DELKA_RETEZCE, soubor) == 0) {
 		while (strcmp(heslo, "admin") != 0) {
 			printf("Zadali jste spatne heslo\n");
 			printf("------------------------------\n");
 			printf("Zadejte heslo: ");
-			scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+			scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 			printf("------------------------------\n");
 		}
 		printf("Uspesne prihlaseni\n");
 		printf("------------------------------\n");
 		printf("Zadejte nove heslo pro admina: ");
-		scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+		scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 		strcat(heslo, "\n");
 		fprintf(temp, heslo);
 		printf("------------------------------\n");
@@ -397,19 +399,19 @@ void admin(FILE* soubor) {
 			printf("Zadali jste spatne heslo\n");
 			printf("------------------------------\n");
 			printf("Zadejte heslo: ");
-			scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+			scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 			strcat(heslo, "\n");
 			printf("------------------------------\n");
 		}
 		printf("Uspesne prihlaseni\n");
 		printf("------------------------------\n");
 		printf("Lektori a jejich predmety: \n");
-		while (fgets(radek, 100, soubor)) {
+		while (fgets(radek, DELKA_RETEZCE, soubor)) {
 			printf(radek);
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			printf(radek);
-			fgets(radek, 100, soubor);
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			printf(radek);
 			printf("\n");
 		}
@@ -417,21 +419,21 @@ void admin(FILE* soubor) {
 	}
 
 	printf("Zadejte jmeno lektora pro pridani: ");
-	scanf_s(" %99[^\n]", jmeno, (unsigned)sizeof(jmeno));
+	scanf_s(DELKA_CTENI, jmeno, (unsigned)sizeof(jmeno));
 	printf("------------------------------\n");
 	strcat(jmeno, "\n");
 
 	printf("Zadejte ID lektora pro pridani: ");
-	scanf_s(" %99[^\n]", id, (unsigned)sizeof(id));
+	scanf_s(DELKA_CTENI, id, (unsigned)sizeof(id));
 	strcat(id, "\n");
 	printf("------------------------------\n");
 
 	rewind(soubor);
 
-	while (fgets(radek, 100, soubor)) {
+	while (fgets(radek, DELKA_RETEZCE, soubor)) {
 		if (strcmp(radek, jmeno) == 0) {										//Overuje, zda je jmeno v seznamu
 			fprintf(temp, radek);
-			fgets(radek, 100, soubor);
+			fgets(radek, DELKA_RETEZCE, soubor);
 			if (strcmp(radek, id) == 0) {
 				fprintf(temp, radek);
 				printf("Lektor je jiz pridan\n");
@@ -439,7 +441,7 @@ void admin(FILE* soubor) {
 				printf("Dostupne prefixy:\n");
 				printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
 				printf("Zadejte prefix predmetu, do ktereho chcete lektora pridat: ");
-				scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+				scanf_s(DELKA_CTENI, prefix, (unsigned)sizeof(prefix));
 				printf("------------------------------\n");
 				while (1) {
 					for (int i = 0; i < 16; i++) {
@@ -455,7 +457,7 @@ void admin(FILE* soubor) {
 						printf("Zadali jste spatny prefix\n");
 						printf("------------------------------\n");
 						printf("Zadejte spravny prefix: ");
-						scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+						scanf_s(DELKA_CTENI, prefix, (unsigned)sizeof(prefix));
 						printf("------------------------------\n");
 					}
 				}
@@ -463,15 +465,15 @@ void admin(FILE* soubor) {
 				strcat(prefix, "-");
 				
 				printf("Zadejte zkratku predmetu, do ktereho chcete lektora pridat: ");
-				scanf_s(" %99[^\n]", predmet, (unsigned)sizeof(predmet));
+				scanf_s(DELKA_CTENI, predmet, (unsigned)sizeof(predmet));
 				printf("------------------------------\n");
 
 				strcat(prefix, predmet);
 				strcpy(predmet, prefix);
 
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				fprintf(temp, radek);
-				fgets(radek, 100, soubor);
+				fgets(radek, DELKA_RETEZCE, soubor);
 				strcpy(pomocny_radek, radek);
 				tradek = strtok(pomocny_radek, " \n");
 				while (tradek != NULL) {											//Prohledava, jestli je lektor zapsan
@@ -504,12 +506,12 @@ void admin(FILE* soubor) {
 	}
 	if (k == 1) {																//Vytiskne do souboru nove jmeno, id, heslo a rovnou s predmety
 		printf("Zadejte nove heslo pro lektora: ");
-		scanf_s(" %99[^\n]", heslo, (unsigned)sizeof(heslo));
+		scanf_s(DELKA_CTENI, heslo, (unsigned)sizeof(heslo));
 
 		printf("Dostupne prefixy:\n");
 		printf("BPC, BPA, BKC, BKA, MPC, MPA, MKC, MKA, DPC, DPA, DKC, DKA, XPC, XPA, XKC, XKA\n\n");
 		printf("Zadejte prefix predmetu, do ktereho chcete lektora pridat: ");
-		scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+		scanf_s(DELKA_CTENI, prefix, (unsigned)sizeof(prefix));
 		printf("------------------------------\n");
 		while (1) {
 			for (int i = 0; i < 16; i++) {
@@ -525,14 +527,14 @@ void admin(FILE* soubor) {
 				printf("Zadali jste spatny prefix\n");
 				printf("------------------------------\n");
 				printf("Zadejte spravny prefix: ");
-				scanf_s(" %99[^\n]", prefix, (unsigned)sizeof(prefix));
+				scanf_s(DELKA_CTENI, prefix, (unsigned)sizeof(prefix));
 				printf("------------------------------\n");
 			}
 		}
 		strcat(prefix, "-");
 
 		printf("Zadejte zkratku predmetu, do ktereho chcete lektora pridat: ");
-		scanf_s(" %99[^\n]", predmet, (unsigned)sizeof(predmet));
+		scanf_s(DELKA_CTENI, predmet, (unsigned)sizeof(predmet));
 		printf("------------------------------\n");
 
 		strcat(prefix, predmet);
