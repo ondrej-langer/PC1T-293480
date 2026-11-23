@@ -55,7 +55,7 @@ int main()
 		char predmet[DELKA_RETEZCE];
 		int pocetpredmetu = 0;
 		char predmety[10][50];
-		unsigned short k = 0;
+		unsigned short k = 0; //
 		
 		int akce = 0;
 		unsigned short overeni = 1;
