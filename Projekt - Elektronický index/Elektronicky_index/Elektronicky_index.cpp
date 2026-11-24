@@ -54,8 +54,8 @@ int main()
 
 		char predmet[DELKA_RETEZCE];
 		int pocetpredmetu = 0;
-		char predmety[10][50];
-		unsigned short k = 0; //
+		char predmety[MAX_PREDMETU][DELKA_RETEZCE];
+		unsigned short predmetNacteny = 0; //
 		
 		int akce = 0;
 		unsigned short overeni = 1;
@@ -68,8 +68,8 @@ int main()
 				scanf_s(DELKA_CTENI, predmet, (unsigned)sizeof(predmet));	//Nacteni predmetu pro editaci
 				printf("------------------------------\n");
 				// &pocetpredmetu: predani adresou (pointer), aby funkce menila hodnotu v main
-				if (overeniPredmetu(predmet, &pocetpredmetu, predmety, k, lektori)) {	//Vyhodnoceni, zda ma lektor opravneni editovat predmet
-					k = 1;
+				if (overeniPredmetu(predmet, &pocetpredmetu, predmety, predmetNacteny, lektori)) {	//Vyhodnoceni, zda ma lektor opravneni editovat predmet
+					predmetNacteny = 1;
 					break;
 				}
 				else {
@@ -81,7 +81,7 @@ int main()
 					}
 					printf("\n\n");
 				}
-				k = 1;
+				predmetNacteny = 1;
 			}
 			
 			while (1) {														//Zadani akce, kterou chceme provest
@@ -125,12 +125,15 @@ int main()
 			}
 			
 			if (akce == 7) {
+				// fclose: zapise vyrovnavaci buffer na disk a uvolni souborovy pointer v OS
+				fclose(lektori);
+				fclose(studenti);
 				system("cls");
 				break;
 			}
 
 			int pocetpredmetuS = 0;
-			char predmetyS[10][50];
+			char predmetyS[MAX_PREDMETU][DELKA_RETEZCE];
 
 			while (1) {														//Overeni, zda student existuje
 				printf("------------------------------\n");
@@ -164,7 +167,7 @@ int main()
 				}
 				else {
 					int i;
-					printf("Zadali jste nespravne jmeno nebo ID\n");
+					printf("Student neexistuje nebo neni zapsan v tomto predmetu\n");
 					printf("------------------------------\n");
 					rewind(studenti);
 					// uvolneni pole: strcpy nastavi na index 0 ukoncovaci znak \0
@@ -177,9 +180,5 @@ int main()
 			}
 		}
 	}
-	// fclose: zapise vyrovnavaci buffer na disk a uvolni souborovy pointer v OS
-	fclose(lektori);										//TYTO CLOSY SMAZAT NEBO PRESUNOUT
-	fclose(studenti);
 	return 0;
-	
 }
